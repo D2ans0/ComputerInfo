@@ -32,7 +32,25 @@ namespace NickStrupat
             String[] OSInfoLines;
             try
             {
-                OSInfoLines = File.ReadAllLines(@"z:/etc/os-release");
+                string nixosOSRel = @"z:/run/current-system/etc/os-release";
+                string pressureVesselOSRel = @"z:/run/host/etc/os-release";
+                string genericOSRel = @"z:/etc/os-release";
+
+                string OSRelPath = genericOSRel; // Default generic os-release path
+
+                if (File.Exists(nixosOSRel)) // NixOS
+                {
+                    OSRelPath = nixosOSRel;
+                } else if (File.Exists(pressureVesselOSRel)) // Pressure Vessel Host
+                {
+                    OSRelPath = pressureVesselOSRel;
+                }
+                else 
+                {
+                    OSRelPath = genericOSRel;
+                }
+
+                OSInfoLines = File.ReadAllLines(OSRelPath);
             }
             catch (Exception x)
             {
